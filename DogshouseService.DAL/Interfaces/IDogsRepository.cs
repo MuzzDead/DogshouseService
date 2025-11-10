@@ -5,8 +5,6 @@ namespace DogshouseService.DAL.Interfaces;
 public interface IDogsRepository
 {
     Task AddAsync(Dog dog);
-    Task UpdateAsync(Dog dog);
-    Task DeleteAsync(Guid id);
-    Task<Dog?> GetByIdAsync(Guid id);
-    Task<IEnumerable<Dog>> GetAllAsync();
+    Task<bool> ExistsByNameAsync(string name);
+    Task<(IList<Dog> Items, int Total)> GetPagedAsync(string? attribute, string? order, int pageNumber, int pageSize);
 }
