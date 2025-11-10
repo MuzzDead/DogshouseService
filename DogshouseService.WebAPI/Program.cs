@@ -1,4 +1,6 @@
 using DogshouseService.DAL;
+using DogshouseService.DAL.Interfaces;
+using DogshouseService.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IDogsRepository, DogsRepository>();
 
 var app = builder.Build();
 
