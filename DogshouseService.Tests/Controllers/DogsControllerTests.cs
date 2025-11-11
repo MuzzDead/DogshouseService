@@ -108,11 +108,9 @@ public class DogsControllerTests
         var result = await _controller.CreateAsync(request);
 
         // Assert
-        var createdAtResult = Assert.IsType<CreatedAtActionResult>(result);
-
-        Assert.Equal(createdDto, createdAtResult.Value);
-
-        Assert.Equal(nameof(DogsController.GetAsync), createdAtResult.ActionName);
+        var createdResult = Assert.IsType<CreatedResult>(result);
+        Assert.Equal(createdDto, createdResult.Value);
+        Assert.Equal("dogs", createdResult.Location);
     }
 
     [Fact]

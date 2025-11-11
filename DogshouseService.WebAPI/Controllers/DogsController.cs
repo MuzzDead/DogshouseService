@@ -40,7 +40,7 @@ public class DogsController : ControllerBase
         try
         {
             var createdDog = await _service.CreateAsync(request);
-            return CreatedAtAction(nameof(GetAsync), new { }, createdDog);
+            return Created("dogs", createdDog);
         }
         catch (ArgumentException ex)
         {
