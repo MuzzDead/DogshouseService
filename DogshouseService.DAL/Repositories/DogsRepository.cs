@@ -15,30 +15,39 @@ public class DogsRepository : IDogsRepository
     public async Task AddAsync(Dog dog)
     {
         await _context.Dogs.AddAsync(dog);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> ExistsByNameAsync(string name)
     {
-        var dog = await _context.Dogs.FindAsync(id);
-        if (dog != null)
+        return await _context.Dogs.AnyAsync(d => d.Name.ToLower() == name.ToLower());
+    }
+
+    public async Task<(IList<Dog> Items, int Total)> GetPagedAsync(string? attribute, string? order, int pageNumber, int pageSize)
+    {
+        var query = _context.Dogs.AsQueryable();
+
+        attribute = attribute?.ToLower() ?? "name";
+        order = order?.ToLower() ?? "asc";
+
+        query = (attribute, order) switch
         {
-            _context.Dogs.Remove(dog);
-        }
-    }
+            ("weight", "desc") => query.OrderByDescending(d => d.Weight),
+            ("weight", "asc") => query.OrderBy(d => d.Weight),
+            ("tail_length", "desc") => query.OrderByDescending(d => d.TailLength),
+            ("tail_length", "asc") => query.OrderBy(d => d.TailLength),
+            ("color", "desc") => query.OrderByDescending(d => d.Color),
+            ("color", "asc") => query.OrderBy(d => d.Color),
 
-    public async Task<IEnumerable<Dog>> GetAllAsync()
-    {
-        return await _context.Dogs.ToListAsync();
-    }
+            _ => (order == "desc" ? query.OrderByDescending(d => d.Name) : query.OrderBy(d => d.Name))
+        };
 
-    public async Task<Dog?> GetByIdAsync(Guid id)
-    {
-        return await _context.Dogs.FindAsync(id);
-    }
+        var total = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
-    public Task UpdateAsync(Dog dog)
-    {
-        _context.Dogs.Update(dog);
-        return Task.CompletedTask;
+        return (items, total);
     }
 }
