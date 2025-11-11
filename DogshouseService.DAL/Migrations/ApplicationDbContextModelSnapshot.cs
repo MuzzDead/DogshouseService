@@ -37,7 +37,8 @@ namespace DogshouseService.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TailLength")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "tail_length");
 
                     b.Property<int>("Weight")
                         .HasColumnType("int");
