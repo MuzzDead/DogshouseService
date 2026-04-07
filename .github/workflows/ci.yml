@@ -25,3 +25,27 @@ jobs:
 
     - name: Run tests
       run: dotnet test --no-build --configuration Release --verbosity normal
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup SSH (Simulation)
+      run: |
+        echo "Creating .ssh directory..."
+        echo "Loading SSH key from GitHub Secrets for user ${{ secrets.USERNAME }}..."
+        echo "Adding host ${{ secrets.HOST }} to known_hosts..."
+        
+    - name: Deploy via SSH (Simulation)
+      run: |
+        echo "Executing command: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash ~/deploy.sh'"
+        echo "--- Server output ---"
+        echo "Pulling latest changes from master..."
+        echo "Stopping DogshouseService containers..."
+        echo "Building new .NET 9 image..."
+        echo "Starting new containers..."
+        echo "Deployment to ${{ secrets.HOST }} completed successfully!"
