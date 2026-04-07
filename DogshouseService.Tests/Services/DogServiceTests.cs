@@ -174,4 +174,6 @@ public class DogServiceTests
     }
 
     #endregion
+
+    // for testing pipeline
 }
